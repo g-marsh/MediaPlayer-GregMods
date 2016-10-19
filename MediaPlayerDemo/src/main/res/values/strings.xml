@@ -56,5 +56,9 @@
     <string name="openvideo_type">Paste or type URL</string>
     <string name="openvideo_dash_hint">Hint: If the URL to a DASH MPD does not end in the .mpd extension, you can hint a DASH stream by prepending \'dash://\' in front of the actual URL.</string>
     <string name="action_reload_source">Reload source</string>
+    <string name="frame_back">FrmBk</string>
+    <string name="frame_forward">FrmFw</string>
+    <string name="step_back">StpBk</string>
+    <string name="step_forward">StpFw</string>
 
 </resources>
