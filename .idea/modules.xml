@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MediaPlayer/MediaPlayer.iml" filepath="$PROJECT_DIR$/MediaPlayer/MediaPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/MediaPlayer-DASH/MediaPlayer-DASH.iml" filepath="$PROJECT_DIR$/MediaPlayer-DASH/MediaPlayer-DASH.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MediaPlayer-Extended.iml" filepath="$PROJECT_DIR$/MediaPlayer-Extended.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MediaPlayer-GregMods.iml" filepath="$PROJECT_DIR$/MediaPlayer-GregMods.iml" />
       <module fileurl="file://$PROJECT_DIR$/MediaPlayerDemo/MediaPlayerDemo.iml" filepath="$PROJECT_DIR$/MediaPlayerDemo/MediaPlayerDemo.iml" />
     </modules>
   </component>

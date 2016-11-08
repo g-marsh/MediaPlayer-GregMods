@@ -50,8 +50,10 @@ public class VideoViewActivity extends Activity {
     private MediaSource mMediaSource;
 
     private Button btnFrameBk;
+    private Button btnHalfStepBk;
     private Button btnStepBk;
     private Button btnFrameFw;
+    private Button btnHalfStepFw;
     private Button btnStepFw;
     private int intNextPosition;
 
@@ -100,7 +102,36 @@ public class VideoViewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
-                mVideoView.seekTo(mVideoView.getCurrentPosition()-667);
+                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-667;
+                else intNextPosition = intNextPosition -667;
+                if (intNextPosition >= 0) {
+                    mVideoView.seekTo(intNextPosition);
+                }
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At start of video",
+                            Toast.LENGTH_LONG).show();
+                }
+//                mVideoView.seekTo(mVideoView.getCurrentPosition()-667);
+            }
+        });
+
+        // Step Back 1/2
+        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVideoView.pause();
+                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-333;
+                else intNextPosition = intNextPosition -333;
+                if (intNextPosition >= 0) {
+                    mVideoView.seekTo(intNextPosition);
+                }
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At start of video",
+                            Toast.LENGTH_LONG).show();
+                }
+//                mVideoView.seekTo(mVideoView.getCurrentPosition()-667);
             }
         });
 
@@ -109,24 +140,66 @@ public class VideoViewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
-                mVideoView.seekTo(mVideoView.getCurrentPosition()+34);
+                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()+34;
+                else intNextPosition = intNextPosition +34;
+                mVideoView.seekTo(intNextPosition);
+//                mVideoView.seekTo(mVideoView.getCurrentPosition()+34);
             }
         });
+
+        // Step Forward 1/2
+        findViewById(R.id.button6).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mSec = mVideoView.getCurrentPosition();
+                if ((mSec+333) <= mVideoView.getDuration()) {
+                    mVideoView.start();
+                    while(mVideoView.getCurrentPosition() < mSec+(333-15)){
+                        // wait
+                    }
+                    mVideoView.pause();
+                    if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()+333;
+                    else intNextPosition = intNextPosition +333;
+                    mVideoView.seekTo(intNextPosition);
+                }
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At end of video",
+                            Toast.LENGTH_LONG).show();
+                }
+//                mVideoView.seekTo(mSec+667);
+//                mVideoView.seekTo(mVideoView.getCurrentPosition()+667);
+            }
+        });
+
 
         // Step Forward
         findViewById(R.id.button4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int mSec = mVideoView.getCurrentPosition();
-                mVideoView.start();
-                while(mVideoView.getCurrentPosition() < mSec+667){
-                    // wait
+                if ((mSec+667) <= mVideoView.getDuration()) {
+                    mVideoView.start();
+                    while(mVideoView.getCurrentPosition() < mSec+(667-15)){
+                        // wait
+                    }
+                    mVideoView.pause();
+                    if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()+667;
+                    else intNextPosition = intNextPosition +667;
+                    mVideoView.seekTo(intNextPosition);
                 }
-                mVideoView.pause();
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At end of video",
+                            Toast.LENGTH_LONG).show();
+                }
 //                mVideoView.seekTo(mSec+667);
 //                mVideoView.seekTo(mVideoView.getCurrentPosition()+667);
             }
         });
+
+
+
     }
 
     @Override
