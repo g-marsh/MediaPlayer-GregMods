@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -32,6 +33,9 @@ import android.widget.Toast;
 import net.protyposis.android.mediaplayer.MediaPlayer;
 import net.protyposis.android.mediaplayer.MediaSource;
 import net.protyposis.android.mediaplayer.VideoView;
+
+import static android.R.drawable.ic_media_pause;
+import static android.R.drawable.ic_media_play;
 
 public class VideoViewActivity extends Activity {
 
@@ -55,6 +59,7 @@ public class VideoViewActivity extends Activity {
     private Button btnFrameFw;
     private Button btnHalfStepFw;
     private Button btnStepFw;
+    private ImageButton btnPlayPause;
     private int intNextPosition;
 
     @Override
@@ -66,10 +71,11 @@ public class VideoViewActivity extends Activity {
         mVideoView = (VideoView) findViewById(R.id.vv);
         mProgress = (ProgressBar) findViewById(R.id.progress);
 
-        btnFrameBk = (Button) findViewById(R.id.button);
+//        btnFrameBk = (Button) findViewById(R.id.button);
         btnStepBk = (Button) findViewById(R.id.button3);
-        btnFrameFw = (Button) findViewById(R.id.button2);
+//        btnFrameFw = (Button) findViewById(R.id.button2);
         btnStepFw = (Button) findViewById(R.id.button4);
+        btnPlayPause = (ImageButton) findViewById(R.id.imageButton);
 
         mMediaPlayerControl = mVideoView; //new MediaPlayerDummyControl();
         mMediaController = new MediaController(this);
@@ -86,13 +92,38 @@ public class VideoViewActivity extends Activity {
         mVideoPlaying = false;
 
         // Frame Back
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.imageButton3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
                 if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-34;
                 else intNextPosition = intNextPosition -34;
                 mVideoView.seekTo(intNextPosition);
+//                mVideoView.seekTo(mVideoView.getCurrentPosition()-34); TODO COPY TO OTHER STEPS/SEEKS
+            }
+        });
+
+
+
+        // Play/Pause
+//        findViewById(R.id.imageButton).setOnClickListener(new View.OnClickListener() {
+        btnPlayPause.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mVideoView.isPlaying()){
+                    mVideoView.pause();
+                    btnPlayPause.setImageResource(ic_media_play);
+                    intNextPosition = mVideoView.getCurrentPosition();
+                }
+                else {
+                    mVideoView.start();
+                    btnPlayPause.setImageResource(ic_media_pause);
+                }
+
+//                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-34;
+//                else intNextPosition = intNextPosition -34;
+//                mVideoView.seekTo(intNextPosition);
 //                mVideoView.seekTo(mVideoView.getCurrentPosition()-34); TODO COPY TO OTHER STEPS/SEEKS
             }
         });
@@ -136,7 +167,7 @@ public class VideoViewActivity extends Activity {
         });
 
         // Frame Forward
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.imageButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
