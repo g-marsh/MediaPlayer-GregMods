@@ -91,13 +91,13 @@
             android:layout_weight="1" />
 
         <TextView
-            android:text="00.00"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             android:layout_weight="0"
             android:background="@android:color/darker_gray"
             android:alpha=".75"
-            android:layout_width="wrap_content" />
+            android:layout_width="wrap_content"
+            android:text="##.##" />
 
     </LinearLayout>
 

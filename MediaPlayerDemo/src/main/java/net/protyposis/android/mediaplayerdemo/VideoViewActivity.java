@@ -42,8 +42,9 @@ import static android.R.drawable.ic_media_play;
 public class VideoViewActivity extends Activity {
 
     private static final String TAG = VideoViewActivity.class.getSimpleName();
-
     private VideoView mVideoView;
+
+    // ProgressBar is the circle in the middle of screen during seeks - in xml set visibility to see
     private ProgressBar mProgress;
 
     private MediaController.MediaPlayerControl mMediaPlayerControl;
@@ -56,9 +57,7 @@ public class VideoViewActivity extends Activity {
     private MediaSource mMediaSource;
 
     private ImageButton btnPlayPause;
-    private int intNextPosition;
     private TextView textView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,21 +81,19 @@ public class VideoViewActivity extends Activity {
 
         // Init video playback state (will eventually be overwritten by saved instance state)
         mVideoUri = getIntent().getData();
-        mVideoPosition = 0;
+        //mVideoPosition = 0; ********** debug
         mVideoPlaybackSpeed = 1;
         mVideoPlaying = false;
 
         // Play/Pause
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if (mVideoView.isPlaying()){
                     mVideoView.pause();
                     btnPlayPause.setImageResource(ic_media_play);
-                    intNextPosition = mVideoView.getCurrentPosition();
-                    textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                            "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
+                    mVideoPosition = mVideoView.getCurrentPosition();
+                    textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
                 }
                 else {
                     mVideoView.start();
@@ -110,25 +107,29 @@ public class VideoViewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
-                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-34;
-                else intNextPosition = intNextPosition -34;
-                mVideoView.seekTo(intNextPosition);
-                textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                        "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
+                if (mVideoPosition >= 34) {
+                    mVideoPosition -=34;
+                    mVideoView.seekTo(mVideoPosition);
+                    textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
+                }
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At start of video",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
+
 
         // Step Back
         findViewById(R.id.imageButton5).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
-                if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()-667;
-                else intNextPosition = intNextPosition -667;
-                if (intNextPosition >= 0) {
-                    mVideoView.seekTo(intNextPosition);
-                    textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                            "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
+                if (mVideoPosition >= 667) {
+                    mVideoPosition -=667;
+                    mVideoView.seekTo(mVideoPosition);
+                    textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
                 }
                 else {
                     Toast.makeText(VideoViewActivity.this,
@@ -142,41 +143,34 @@ public class VideoViewActivity extends Activity {
         findViewById(R.id.imageButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    int mSec = mVideoView.getCurrentPosition();
-                    if ((mSec+34) <= mVideoView.getDuration()) {
-
-                        mVideoView.pause();
-                    if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()+34;
-                    else intNextPosition = intNextPosition +34;
-                    mVideoView.seekTo(intNextPosition);
-                    textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                            "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
-                    }
-                    else {
-                        Toast.makeText(VideoViewActivity.this,
-                                "At end of video",
-                                Toast.LENGTH_LONG).show();
-                    }
+                mVideoView.pause();
+                if (mVideoPosition <= (mVideoView.getDuration()-34)) {
+                    mVideoPosition +=34;
+                    mVideoView.seekTo(mVideoPosition);
+                    textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
+                }
+                else {
+                    Toast.makeText(VideoViewActivity.this,
+                            "At end of video",
+                            Toast.LENGTH_LONG).show();
+                }
             }
-
         });
 
         // Step Forward
         findViewById(R.id.imageButton4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int mSec = mVideoView.getCurrentPosition();
-                if ((mSec+667+100) <= mVideoView.getDuration()) {
+                mVideoView.pause();
+                if (mVideoPosition <= (mVideoView.getDuration()-667-100)) {
                     mVideoView.start();
-                    while(mVideoView.getCurrentPosition() < mSec+(667-15)){
+                    while(mVideoView.getCurrentPosition() < mVideoPosition+(667-15)){
                         // wait while video plays to approximate position then pause and seek to exact
                     }
                     mVideoView.pause();
-                    if (intNextPosition == 0) intNextPosition = mVideoView.getCurrentPosition()+667;
-                    else intNextPosition = intNextPosition +667;
-                    mVideoView.seekTo(intNextPosition);
-                    textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                            "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
+                    mVideoPosition +=667;
+                    mVideoView.seekTo(mVideoPosition);
+                    textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
                 }
                 else {
                     Toast.makeText(VideoViewActivity.this,
@@ -191,17 +185,15 @@ public class VideoViewActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mVideoView.pause();
-                mVideoView.seekTo(0);
-                textView.setText(getMilliToString(mVideoView.getCurrentPosition())+
-                        "\n"+ getMilliToString(mVideoView.getDuration()-mVideoView.getCurrentPosition()));
+                mVideoPosition = 0;
+                mVideoView.seekTo(mVideoPosition);
+                textView.setText(getVideoPositionString(mVideoPosition,mVideoView.getDuration()));
             }
         });
 
     }
 
     public String getMilliToString(int millis)
-    //    public static String getMilliToString(long millis)
-
     /**
      * Convert a millisecond duration to a string stopwatch format
      *
@@ -216,6 +208,21 @@ public class VideoViewActivity extends Activity {
 
 //        return(minutes+":"+String.format("%02d",seconds)+"."+String.format("%02d", hundreds));
         return(String.format("%02d",seconds)+"."+String.format("%02d", hundreds));
+    }
+
+    public String getVideoPositionString(int currentTime, int endTime)
+    /**
+     * Convert a millisecond duration to a string videoplayer time format
+     *
+     * @param currentTime a duration to convert to a string form
+     * @param endTime a duration to convert to a string form and concatenate
+     * @return A string of the form ss.SS \n ss.SS
+     */
+
+    {
+//        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+
+        return(getMilliToString(currentTime)+ "\n"+ getMilliToString(endTime-currentTime));
     }
 
 
